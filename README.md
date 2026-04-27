@@ -18,7 +18,7 @@ pip install torch numpy matplotlib scipy
 from your_file import run_experiment  
 run_experiment()
  
-## or run it in google colab/jupyter notebook
+or run it in google colab/jupyter notebook
 ---
 
 ## 3. Recommended Setup (standard experiment)
