@@ -122,190 +122,233 @@ run_experiment(
     device='cpu', save_prefix='', verbose=True,
 )
 
-# ============================================================
 # run_experiment Parameter Explanation
-# ============================================================
 
-# 1. Experiment Preset
-# ------------------------------------------------------------
-# mode:
-# Controls a predefined configuration.
-#
-# 'quick'  -> very small setup for debugging
-# '3x3'    -> default experiment
-# '5x5'    -> larger problem (slower)
-# 'custom' -> fully manual configuration
-#
-# If you do not override parameters, values are taken from this preset.
+---
 
+## 1. Experiment Preset
 
-# 2. Problem / Data Generation
-# ------------------------------------------------------------
-# grid_size:
-# Size of the shortest-path grid.
-#
-# 3 -> 3×3 grid
-# 5 -> 5×5 grid
-#
-# Larger grid -> harder optimization problem.
+### mode
 
+Controls a predefined configuration.
 
-# p:
-# Feature dimension of input x.
-#
-# Higher p -> harder prediction task.
+- `quick`  → very small setup for debugging  
+- `3x3`    → default experiment  
+- `5x5`    → larger problem (slower)  
+- `custom` → fully manual configuration  
 
+If you do not override parameters, values are taken from this preset.
 
-# noise_level:
-# Controls multiplicative noise in cost generation.
-#
-# 0.0  -> no noise
-# 0.25 -> moderate noise (default)
-#
-# Higher noise -> harder learning.
+---
 
+## 2. Problem / Data Generation
 
-# deg:
-# Degree of nonlinearity in the cost function:
-#
-# c(x) = 1 + (1 + x B^T)^deg
-#
-# 1  -> nearly linear
-# >1 -> more nonlinear
+### grid_size
 
+Size of the shortest-path grid.
 
-# 3. Dataset Split
-# ------------------------------------------------------------
-# n_init:
-# Number of initial labeled samples (warm start)
+- `3` → 3×3 grid  
+- `5` → 5×5 grid  
 
+Larger grid → harder optimization problem.
 
-# n_pool:
-# Number of unlabeled samples in the stream
+---
 
+### p
 
-# n_test:
-# Number of test samples for evaluation
+Feature dimension of input `x`.
 
+Higher `p` → harder prediction task.
 
-# budget:
-# Maximum number of samples allowed to be labeled during active learning
-#
-# This is the main resource constraint.
+---
 
+### noise_level
 
-# 4. Model
-# ------------------------------------------------------------
-# model_type:
-# 'linear' -> linear model (default, fast and stable)
-# other    -> MLP (2-layer neural network)
+Controls multiplicative noise in cost generation.
 
+- `0.0`  → no noise  
+- `0.25` → moderate noise (default)  
 
-# hidden_dim:
-# Hidden layer size (only used for MLP)
+Higher noise → harder learning.
 
+---
 
-# 5. Training
-# ------------------------------------------------------------
-# Initial training:
-# init_lr     -> learning rate
-# init_epochs -> number of epochs
-#
-# Used on the initial labeled dataset.
+### deg
 
+Degree of nonlinearity in the cost function:
 
-# Update training:
-# update_lr    -> learning rate after each new label
-# update_steps -> number of steps (used if online_mode=False)
+\[
+c(x) = 1 + (1 + x B^T)^{deg}
+\]
 
+- `1`  → nearly linear  
+- `>1` → more nonlinear  
 
-# online_mode:
-# True  -> one SGD step per new sample (recommended)
-# False -> mini-batch retraining (slower but smoother)
+---
 
+## 3. Dataset Split
 
-# 6. Active Learning
-# ------------------------------------------------------------
-# methods:
-# List of methods to run:
-#
-# ['supervise', 'uncertainty', 'margin', 'flip', 'regret']
-#
-# supervise   -> no selection (baseline)
-# uncertainty -> variance-based
-# margin      -> decision boundary
-# flip        -> decision instability (ours)
-# regret      -> expected decision loss (ours)
+### n_init
 
+Number of initial labeled samples (warm start)
 
-# q_tilde:
-# Quantile used for thresholding selection.
-#
-# margin       -> select low-margin samples
-# flip/regret  -> select high-score samples
-#
-# Examples:
-# 0.5 -> median threshold
-# 0.2 -> more selective
+---
 
+### n_pool
 
-# M:
-# Number of Monte Carlo samples used in:
-# - flip probability
-# - expected regret
-#
-# Higher M -> more accurate but slower.
+Number of unlabeled samples in the stream
 
+---
 
-# margin_threshold:
-# Used only in data generation to ensure class separability.
-#
-# Not part of the learning algorithm.
+### n_test
 
+Number of test samples for evaluation
 
-# 7. Uncertainty (Laplace Approximation)
-# ------------------------------------------------------------
-# Used for uncertainty / flip / regret.
+---
 
+### budget
 
-# prior_precision:
-# Strength of prior in Laplace approximation
+Maximum number of samples allowed to be labeled during active learning.
 
+This is the main resource constraint.
 
-# laplace_noise_var:
-# Assumed observation noise variance
+---
 
+## 4. Model
 
-# 8. Stream Control (Important)
-# ------------------------------------------------------------
-# stream_clustering:
-# Controls redundancy in the stream:
-#
-# 0.0 -> fully shuffled (i.i.d.)
-# 1.0 -> fully clustered
-# between -> Markov-chain clustering
-#
-# This is a key experimental knob.
+### model_type
 
+- `linear` → linear model (default, fast and stable)  
+- other    → MLP (2-layer neural network)
 
-# max_scan:
-# Maximum number of samples scanned before forcing labeling.
-#
-# None        -> no limit
-# set integer -> prevents excessive scanning
+---
 
+### hidden_dim
 
-# 9. System
-# ------------------------------------------------------------
-# device:
-# 'cpu'
-# 'cuda'
+Hidden layer size (only used for MLP)
 
+---
 
-# save_prefix:
-# Prefix for output file names
+## 5. Training
 
+### Initial training
 
-# verbose:
-# True  -> print logs
-# False -> silent
+- `init_lr` → learning rate  
+- `init_epochs` → number of epochs  
+
+Used on the initial labeled dataset.
+
+---
+
+### Update training
+
+- `update_lr` → learning rate after each new label  
+- `update_steps` → number of steps (used if `online_mode=False`)
+
+---
+
+### online_mode
+
+- `True`  → one SGD step per new sample (recommended)  
+- `False` → mini-batch retraining (slower but smoother)
+
+---
+
+## 6. Active Learning
+
+### methods
+
+List of methods to run:
+
+- `supervise`   → no selection (baseline)  
+- `uncertainty` → variance-based  
+- `margin`      → decision boundary  
+- `flip`        → decision instability (ours)  
+- `regret`      → expected decision loss (ours)  
+
+---
+
+### q_tilde
+
+Quantile used for thresholding selection.
+
+- margin → select low-margin samples  
+- flip/regret → select high-score samples  
+
+Examples:
+
+- `0.5` → median threshold  
+- `0.2` → more selective  
+
+---
+
+### M
+
+Number of Monte Carlo samples used in:
+
+- flip probability  
+- expected regret  
+
+Higher `M` → more accurate but slower.
+
+---
+
+### margin_threshold
+
+Used only in data generation to ensure class separability.
+
+Not part of the learning algorithm.
+
+---
+
+## 7. Uncertainty (Laplace Approximation)
+
+Used for `uncertainty`, `flip`, and `regret`.
+
+### prior_precision
+
+Strength of prior in Laplace approximation
+
+---
+
+### laplace_noise_var
+
+Assumed observation noise variance
+
+---
+
+## 8. Stream Control (Important)
+
+### stream_clustering
+
+Controls redundancy in the stream:
+
+- `0.0` → fully shuffled (i.i.d.)  
+- `1.0` → fully clustered  
+- between → Markov-chain clustering  
+
+This is a key experimental knob.
+
+---
+
+### max_scan
+
+Maximum number of samples scanned before forcing labeling.
+
+- `None` → no limit  
+- integer → prevents excessive scanning  
+
+---
+
+## 9. System
+
+### device
+
+- `cpu`  
+- `cuda`  
+
+---
+
+### save_prefix
+
+Prefix for output file names
