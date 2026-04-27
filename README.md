@@ -1,7 +1,7 @@
 # ISE619-End-to-end-Optimization-Project
 # Data-Efficient DFL (Shortest Path) — Usage Guide
 
-This repository runs stream-based(Pool-based are almost the same) active learning experiments for decision-focused learning (DFL).
+This repository runs stream-based(Pool-based are almost the same but with full scan) active learning experiments for decision-focused learning (DFL).
 
 ---
 
